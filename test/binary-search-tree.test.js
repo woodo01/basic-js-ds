@@ -179,5 +179,4 @@ describe('Binary search tree', () => {
       assert.strictEqual(values.every(value => tree.has(value) === true), true);
     });
   });
-
 });

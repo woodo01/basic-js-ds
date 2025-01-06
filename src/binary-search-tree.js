@@ -8,8 +8,13 @@ const { NotImplementedError } = require('../extensions/index.js');
 */
 class BinarySearchTree {
   data  = null;
+  parent = null;
   right = null;
   left = null;
+
+  constructor(parent) {
+    this.parent = parent;
+  }
 
   root() {
     if (this.data == null) return null;
@@ -22,11 +27,11 @@ class BinarySearchTree {
       return null;
     }
     if (this.data > value) {
-      if (this.left === null) this.left = new BinarySearchTree();
+      if (this.left === null) this.left = new BinarySearchTree(this);
       this.left.add(value);
       return null;
     }
-    if (this.right === null) this.right = new BinarySearchTree();
+    if (this.right === null) this.right = new BinarySearchTree(this);
     this.right.add(value);
   }
 
@@ -56,16 +61,32 @@ class BinarySearchTree {
     if (this.data === null) return null;
     if (this.data === value) {
       if (this.left !== null && this.right !== null) {
-        this.data = this.right.min();
+        const min = this.right.min();
+        this.data = min;
+        const minEl = this.right.find(min);
+        if (minEl !== null) {
+          const parent = minEl.parent;
+          if (parent !== null) {
+            if (this === parent) {
+              this.right = parent.right;
+            } else {
+              parent.left = minEl.right;
+            }
+          }
+        }
         return null;
       }
       if (this.left !== null) {
         this.data = this.left.data;
+        this.right = this.left.right;
+        this.parent = this.left.parent;
         this.left = this.left.left;
         return null;
       }
       if (this.right !== null) {
         this.data = this.right.data;
+        this.left = this.right.left;
+        this.parent = this.right.parent;
         this.right = this.right.right;
         return null;
       }
