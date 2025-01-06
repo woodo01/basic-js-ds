@@ -16,8 +16,11 @@ const { NotImplementedError } = require('../extensions/index.js');
 class Queue {
   data = [];
 
-  getUnderlyingList() {
-    return this.data;
+  getUnderlyingList(i = 0) {
+    return {
+      value: this.data[i],
+      next: i < this.data.length - 1 ? this.getUnderlyingList(++i) : null,
+    }
   }
 
   enqueue(value) {
